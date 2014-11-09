@@ -585,7 +585,6 @@ int TWFunc::tw_reboot(RebootCommand command)
 	return -1;
 }
 
-
 void TWFunc::check_and_run_script(const char* script_file, const char* display_name)
 {
 	// Check for and run startup script if script exists

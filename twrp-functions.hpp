@@ -87,7 +87,6 @@ public:
 	static void Fixup_Time_On_Boot(); // Fixes time on devices which need it
 	static std::vector<std::string> Split_String(const std::string& str, const std::string& delimiter, bool removeEmpty = true); // Splits string by delimiter
 
-
 private:
 	static void Copy_Log(string Source, string Destination);
 

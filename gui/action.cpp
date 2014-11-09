@@ -402,63 +402,7 @@ int GUIAction::doAction(Action action, int isThreaded /* = 0 */)
 
 		return 0;
 	}
-
-	if (function == "active_system") {
-		operation_start("active_system");
-        if (arg == "system0") {
-            DataManager::SetValue("tw_active_system", "system0");
-            gui_print("active system change to system0\n");
-            TDBManager.SetBootmode("boot-system0");
-            TDBManager.dualboot_restore_node();
-            TDBManager.dualboot_init();
-            sync();
-        } else if (arg == "system1") {
-            DataManager::SetValue("tw_active_system","system1");
-            gui_print("active system change to system1\n");
-            TDBManager.SetBootmode("boot-system1");
-            TDBManager.dualboot_restore_node();
-            TDBManager.dualboot_init();
-            sync();
-
-        }
-		operation_end(0, simulate);
-		return 0;
-	}
-
-    if (function == "enable_tdb") {
-        bool stat;
-        operation_start("Setup TrueDualboot ...");
-        stat = TDBManager.SetUpTDB();
-        int ret = 0;
-        if (!stat) {
-            ret = 1;
-            gui_print("Failed to setup TruedualBoot\n");
-        } else {
-            gui_print("TrueDualboot func is on\n");
-            DataManager::SetValue("tw_tdb_state","on");
-        }
-        operation_end(ret,simulate);
-        return 0;
-
-
-    }
-
-    if (function == "disable_tdb") {
-        bool stat;
-        operation_start("Disable TrueDualBoot ...");
-        stat = TDBManager.DisableTDB();
-        int ret = 0;
-        if (!stat) {
-            ret = 1;
-            gui_print("TrueDualBoot func is off\n");
-        } else {
-            gui_print("Disabled TrueDualBoot is finshed!\n");
-            DataManager::SetValue("tw_tdb_state","off");
-        }
-        operation_end(ret,simulate);
-        return 0;
-    }
-
+	
 	if (function == "home")
 	{
 		PageManager::SelectPackage("TWRP");

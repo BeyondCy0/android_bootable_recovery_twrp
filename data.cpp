@@ -594,8 +594,6 @@ void DataManager::SetDefaultValues()
 	mValues.insert(make_pair("tw_keyboard_vibrate", make_pair("40", 1)));
 	mValues.insert(make_pair("tw_action_vibrate", make_pair("160", 1)));
 
-
-
 #ifdef TW_FORCE_CPUINFO_FOR_DEVICE_ID
 	printf("TW_FORCE_CPUINFO_FOR_DEVICE_ID := true\n");
 #endif
