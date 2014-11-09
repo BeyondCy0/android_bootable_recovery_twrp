@@ -1234,6 +1234,4 @@ std::vector<std::string> TWFunc::Split_String(const std::string& str, const std:
 	return res;
 }
 
-
-
 #endif // ndef BUILD_TWRPTAR_MAIN

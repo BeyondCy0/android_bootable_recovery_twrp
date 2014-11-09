@@ -45,7 +45,6 @@ extern "C" {
 #include "openrecoveryscript.hpp"
 #include "variables.h"
 #include "twrpDU.hpp"
-#include "tdb-func.hpp"
 
 #ifdef HAVE_SELINUX
 #include "selinux/label.h"
@@ -155,8 +154,6 @@ int main(int argc, char **argv) {
 #else
 	gui_print("No SELinux support (no libselinux).\n");
 #endif
-
-
 
 	PartitionManager.Mount_By_Path("/cache", true);
 
@@ -288,12 +285,6 @@ int main(int argc, char **argv) {
 
 	// Launch the main GUI
 	gui_start();
-
-    LOGINFO("Start init dualboot part for %s...\n",TDBManager.GetCurrentSystem().c_str());
-    //TDBManager.dualboot_init();
-     //TDBFunc *tdb = new TDBFunc();
-     //tdb->dualboot_init();//init dualboot feature
-
 	// Check for su to see if the device is rooted or not
 	if (PartitionManager.Mount_By_Path("/system", false)) {
 		// Disable flashing of stock recovery

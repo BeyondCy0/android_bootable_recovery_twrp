@@ -22,7 +22,6 @@
 #include <string>
 #include <utility>
 #include <map>
-#include "tdb-func.hpp"
 
 using namespace std;
 

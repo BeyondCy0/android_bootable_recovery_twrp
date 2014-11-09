@@ -42,7 +42,6 @@
 #include "data.hpp"
 #include "partitions.hpp"
 #include "twrp-functions.hpp"
-#include "tdb-func.hpp"
 #ifndef TW_NO_SCREEN_TIMEOUT
 #include "gui/blanktimer.hpp"
 #endif
@@ -64,6 +63,7 @@ extern "C"
 #define FILE_VERSION 0x00010001
 
 using namespace std;
+
 map<string, DataManager::TStrIntPair>   DataManager::mValues;
 map<string, string>                     DataManager::mConstValues;
 string                                  DataManager::mBackingFile;
@@ -219,9 +219,6 @@ int DataManager::ResetDefaults()
 	SetDefaultValues();
 	return 0;
 }
-
-
-
 
 int DataManager::LoadValues(const string filename)
 {
@@ -983,24 +980,6 @@ void DataManager::SetDefaultValues()
 
     //en || zh-CN
     mValues.insert(make_pair("tw_lang_name", make_pair("zh-CN", 1)));
-    mValues.insert(make_pair("tw_lang_guisel",make_pair("zh-CN",1)));//for listbox
-
-    string active_system;
-    active_system = TDBManager.GetCurrentSystem();
-    if (!active_system.empty()) {
-    mValues.insert(make_pair("tw_active_system", make_pair(active_system,1)));
-    }
-    string tdb_s;
-    if (TDBManager.GetTDBState()) {
-        tdb_s = "on";
-    } else {
-        tdb_s = "off";
-    }
-    if (!tdb_s.empty()) {
-    mValues.insert(make_pair("tw_tdb_state",make_pair(tdb_s,1)));
-    }
-
-
 
 }
 
@@ -1034,19 +1013,8 @@ int DataManager::GetMagicValue(const string varName, string& value)
 		}
 		value = tmp;
 		return 0;
-    } else if (varName == "tw_current_system") {
-        string current_system;
-        current_system = TDBManager.GetCurrentSystem();
-        value = current_system;
-    } else if (varName == "tw_tdb_state") {
-        string tdb_st;
-        if (TDBManager.GetTDBState()){
-            tdb_st = "on";
-        } else {
-            tdb_st = "off";
-        }
-        value = tdb_st;
-    }
+	}
+
 	else if (varName == "tw_battery")
 	{
 		char tmp[16];

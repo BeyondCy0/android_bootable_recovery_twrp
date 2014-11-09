@@ -2818,6 +2818,7 @@
 				<highlight color="%highlight_color%" />
 				<placement x="%col1_x%" y="%row4_y%" />
 				<font resource="font" color="%button_text_color%" />
+
 				<text>ADB Sideload</text>
 				<image resource="main_button" />
 				<action function="page">sideload</action>
@@ -2858,6 +2859,7 @@
 
 			<object type="action">
 				<touch key="back" />
+
 				<action function="page">main</action>
 
 			</object>

@@ -20,7 +20,7 @@ include $(CLEAR_VARS)
 TARGET_RECOVERY_GUI := true
 
 LOCAL_SRC_FILES := \
-    tdb-func.cpp \
+    twrp.cpp \
     fixPermissions.cpp \
     twrpTar.cpp \
 	twrpDU.cpp \
@@ -34,7 +34,6 @@ LOCAL_SRC_FILES += \
     twinstall.cpp \
     twrp-functions.cpp \
     openrecoveryscript.cpp \
-     twrp.cpp \
     tarWrite.c
 
 ifneq ($(TARGET_RECOVERY_REBOOT_SRC),)
