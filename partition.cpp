@@ -1727,7 +1727,11 @@ bool TWPartition::Restore_Tar(string restore_folder, string Restore_File_System)
 
 	Full_FileName = restore_folder + "/" + Backup_FileName;
 	twrpTar tar;
+    if (full_path != "") {
+        tar.setdir(full_path);
+    } else {
 	tar.setdir(Backup_Path);
+    }
 	tar.setfn(Full_FileName);
 	tar.backup_name = Backup_Name;
 #ifndef TW_EXCLUDE_ENCRYPTED_BACKUPS
