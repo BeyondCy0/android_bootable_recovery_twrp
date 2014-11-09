@@ -401,7 +401,7 @@ int GUIAction::doAction(Action action, int isThreaded /* = 0 */)
 
 		return 0;
 	}
-
+	
 	if (function == "home")
 	{
 		PageManager::SelectPackage("TWRP");

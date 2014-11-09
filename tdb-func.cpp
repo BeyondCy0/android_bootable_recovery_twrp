@@ -49,7 +49,6 @@ TDBFunc::~TDBFunc() {
     //do nothing
 }
 
-
 bool TDBFunc::TDB_before_update(){
     //HACK:: delete node to userdata partition so update_script
     //will not be able to mount it (the wrong way)
@@ -76,8 +75,7 @@ bool TDBFunc::TDB_before_update(){
 }
 
 bool TDBFunc::GetTDBState(){
-    bool tdbstate;
-    PartitionManager.UnMount_By_Path("/data_root",true);//if /data_root is mount, if will case problem
+    bool tdbstate = false;
     PartitionManager.Mount_By_Path("/data",false);
     if(TWFunc::Path_Exists("/data/.truedualboot")) {
         LOGINFO("/data/.truedualboot is exists \n");
@@ -85,7 +83,6 @@ bool TDBFunc::GetTDBState(){
         tdbstate = true;
     } else {
         LOGINFO("TDB state is off");
-        tdbstate = false;
 
     }
     PartitionManager.UnMount_By_Path("/data",false);
@@ -174,7 +171,8 @@ bool TDBFunc::DisableTDB() {
 std::string TDBFunc::GetCurrentSystem() {
     std::string bootmode;
    // bootmode = TDBManager.GetBootmode();
-     bootmode=  GetBootmode();
+    TDBFunc *tdb = new TDBFunc();
+    bootmode = tdb->GetBootmode();
     if (bootmode.compare("boot-system0") == 0)
         return "system0";
     if (bootmode.compare("boot-system1") == 0)
@@ -227,6 +225,7 @@ int TDBFunc::SetBootmode(string bootmode) {
    fclose(misc);
    return 0;
 }
+
 
 bool TDBFunc::dualboot_restore_node(void) {
   /*
@@ -283,7 +282,6 @@ bool TDBFunc::dualboot_restore_node(void) {
 }
 
 
-
 bool TDBFunc::Replace_Device_Node(std::string part,struct stat* st){
     if (st == NULL) {
         LOGERR("partiion stat is null !!!!\n");
@@ -320,9 +318,10 @@ void TDBFunc::dualboot_init_part(std::string part) {
     block = partition->Actual_Block_Device;
     part_backup = "/dev/part_backup_" + part_name;
 
+    stat(block.c_str(),&st);
+
     // check if moved node already exist
     if(stat(part_backup.c_str(), &st) == 0) {
-             LOGINFO(" node = %s already exists \n",part_backup.c_str());
             return;
        // check for original otherwise
      } else if(stat(block.c_str(), &st)==0) {
@@ -334,7 +333,6 @@ void TDBFunc::dualboot_init_part(std::string part) {
 }
 
 void TDBFunc::dualboot_prepare_env(void) {
-    //dualboot_init_part("/data");//backup userdata partition
     dualboot_init_part("/system");
     dualboot_init_part("/system1");
     dualboot_init_part("/boot");
@@ -342,7 +340,6 @@ void TDBFunc::dualboot_prepare_env(void) {
     dualboot_init_part("/modem");
     dualboot_init_part("/modem1");
 
-}
 
 void TDBFunc::dualboot_partinit() {
 
@@ -364,7 +361,7 @@ void TDBFunc::dualboot_partinit() {
        stat(it->second.c_str(),&st);
           partst.insert(make_pair(it->first,st));
 
-  }
+    }
 
 }
 

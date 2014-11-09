@@ -28,7 +28,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
 #define PATH_BOOT_NODE    "/dev/block/mmcblk0p18"
 #define PATH_BOOT_BACKUP  "/dev/part_backup_boot"
 #define PATH_BOOT1_NODE   "/dev/block/mmcblk0p19"
@@ -57,30 +56,30 @@
 
 */
 
+using namespace std;
 class TDBFunc {
 public:
     TDBFunc();
-    ~TDBFunc();
-public:
-
-    int SetBootmode(std::string bootmode);//set active system  , bootmode == system0 / system1
-    std::string GetBootmode();//return system0 || system1
-    bool GetTDBState(); //用于判断/data/.truedualboot文件的状态，当存在时返回true,不存在返回false
-    std::string GetCurrentSystem(); // 用于获取当前激活的系统，system0 | system1
-    bool SetUpTDB();   //用于开启真实双系统
-    bool DisableTDB();  //用于关闭真实双系统
-    bool GenTDBFile();//用于生成/data/.truedualboot 文件
-    bool TDB_before_update();
-    bool Replace_Device_Node(std::string part,struct stat* st);//用于切换设备的device node
-    void dualboot_init_part(std::string part);//用于初始化设备
-    void dualboot_prepare_env(void);//初始化变量
-    void dualboot_setup_env(void);//环境配置
-    void dualboot_init(void);//包含 初始化变量 && 环境配置
-    bool dualboot_restore_node(void);// restore the node for change active system
-    static void dualboot_partinit(); //init the partition info map<string,string> partst;
-
+    virtual ~TDBFunc();
 private:
     static std::map<std::string,struct stat> partst;
+ int SetBootmode(string bootmode);//set active system  , bootmode == system0 / system1
+ string GetBootmode();//return system0 || system1
+
+ static bool GetTDBState(); //用于判断/data/.truedualboot文件的状态，当存在时返回true,不存在返回false
+ static std::string GetCurrentSystem(); // 用于获取当前激活的系统，system0 | system1
+ bool SetUpTDB();   //用于开启真实双系统
+ bool DisableTDB();  //用于关闭真实双系统
+ bool GenTDBFile();//用于生成/data/.truedualboot 文件
+ bool Replace_Device_Node(std::string part,struct stat* st);//用于切换设备的device node
+ void dualboot_init_part(std::string part);//用于初始化设备
+ void dualboot_prepare_env(void);//初始化变量
+ void dualboot_setup_env(void);//环境配置
+ void dualboot_init(void);//包含 初始化变量 && 环境配置
+
+private:
+static std::map<std::string,struct stat> partst;
+
 
 };
 extern TDBFunc TDBManager;

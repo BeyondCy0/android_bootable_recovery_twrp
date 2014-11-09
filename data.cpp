@@ -981,6 +981,9 @@ void DataManager::SetDefaultValues()
     //en || zh-CN
     mValues.insert(make_pair("tw_lang_name", make_pair("zh-CN", 1)));
 
+    mValues.insert(make_pair("tw_lang_guisel",make_pair("zh-CN",1)));//for listbox
+
+
 }
 
 // Magic Values
@@ -1013,8 +1016,7 @@ int DataManager::GetMagicValue(const string varName, string& value)
 		}
 		value = tmp;
 		return 0;
-	}
-
+    }
 	else if (varName == "tw_battery")
 	{
 		char tmp[16];
