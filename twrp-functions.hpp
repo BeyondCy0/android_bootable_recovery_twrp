@@ -54,6 +54,7 @@ public:
     //start adbd
     static void set_usb_driver(bool enabled);
     static void Start_adbd();
+    static std::string GetSystemNameFromBackupPath(std::string path);
 
 #ifndef BUILD_TWRPTAR_MAIN
 	static void install_htc_dumlock(void);                                      // Installs HTC Dumlock
@@ -86,9 +87,7 @@ public:
 	static void Fixup_Time_On_Boot(); // Fixes time on devices which need it
 	static std::vector<std::string> Split_String(const std::string& str, const std::string& delimiter, bool removeEmpty = true); // Splits string by delimiter
 
-	static int setBootmode(string bootmode);
-	//set active system 
-	// bootmode == system0 / system1
+
 private:
 	static void Copy_Log(string Source, string Destination);
 

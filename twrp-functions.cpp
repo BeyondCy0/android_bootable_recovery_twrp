@@ -67,7 +67,7 @@ int TWFunc::Exec_Cmd(const string& cmd, string &result) {
 		memset(&buffer, 0, sizeof(buffer));
 		if (fgets(buffer, 128, exec) != NULL) {
 			buffer[128] = '\n';
-			buffer[129] = NULL;
+            buffer[129] = '\0';
 			result += buffer;
 		}
 	}
@@ -117,6 +117,34 @@ string TWFunc::Get_Path(string Path) {
 		return Pathonly;
 	} else
 		return Path;
+}
+
+//returun "system0" from "/sdcard/TWRP/Backups/2014-08-10-10-35-31-system0-KOT49H"
+string TWFunc::GetSystemNameFromBackupPath(std::string path) {
+    string new_str;
+    size_t start_pos;
+    size_t end_pos;
+    start_pos = 0;
+    end_pos = path.find_last_of("-");
+    if (end_pos != string::npos) {
+        new_str = path.substr(0,end_pos);
+        //cout << "new str = " << new_str << endl;
+
+        start_pos = new_str.find_last_of("-");
+        if (start_pos != string::npos) {
+            string curr_system;
+            curr_system =  new_str.substr(start_pos + 1, new_str.size() - start_pos - 1);
+            if (curr_system.compare("system0") == 0 || curr_system.compare("system1") == 0) {
+                return curr_system;
+            } else {
+                return "";
+            }
+        }
+    }
+
+    return "";
+
+
 }
 
 int TWFunc::Wait_For_Child(pid_t pid, int *status, string Child_Name) {
@@ -557,28 +585,6 @@ int TWFunc::tw_reboot(RebootCommand command)
 	return -1;
 }
 
-
-int TWFunc::setBootmode(string bootmode) {
-   // open misc-partition
-   char *bm =(char*)bootmode.c_str();
-   LOGINFO("bootmode = %s\n", bm);
-   FILE* misc = fopen("/dev/block/platform/msm_sdcc.1/by-name/misc", "wb");
-   if (misc == NULL) {
-        LOGERR("Open misc partitions failed.\n");
-      return -1;
-   }
-
-   // write bootmode
-   fseek(misc, 0x1000, SEEK_SET);
-   if(fputs(bm, misc)<0) {
-      LOGERR("Write bootmode failed.\n");
-      return 0;
-   }
-
-   // close
-   fclose(misc);
-   return 0;
-}
 
 void TWFunc::check_and_run_script(const char* script_file, const char* display_name)
 {
@@ -1094,7 +1100,12 @@ void TWFunc::Auto_Generate_Backup_Name() {
 		return;
 	}
 	string Backup_Name = Get_Current_Date();
-	Backup_Name += " " + propvalue;
+    string cur_system = TDBManager.GetCurrentSystem();
+    if (TDBManager.GetTDBState()) {//if current system support dualboot , GenBackupName == "2014-08-10-22-35-31-system0-KOT49H"
+        Backup_Name += "-" + cur_system + "-" + propvalue;
+    } else {
+    Backup_Name += "-" + propvalue;
+    }
 	if (Backup_Name.size() > MAX_BACKUP_NAME_LEN)
 		Backup_Name.resize(MAX_BACKUP_NAME_LEN);
 	// Trailing spaces cause problems on some file systems, so remove them
@@ -1223,5 +1234,7 @@ std::vector<std::string> TWFunc::Split_String(const std::string& str, const std:
 
 	return res;
 }
+
+
 
 #endif // ndef BUILD_TWRPTAR_MAIN

@@ -20,7 +20,7 @@ include $(CLEAR_VARS)
 TARGET_RECOVERY_GUI := true
 
 LOCAL_SRC_FILES := \
-    twrp.cpp \
+    tdb-func.cpp \
     fixPermissions.cpp \
     twrpTar.cpp \
 	twrpDU.cpp \
@@ -34,6 +34,7 @@ LOCAL_SRC_FILES += \
     twinstall.cpp \
     twrp-functions.cpp \
     openrecoveryscript.cpp \
+     twrp.cpp \
     tarWrite.c
 
 ifneq ($(TARGET_RECOVERY_REBOOT_SRC),)
@@ -285,6 +286,9 @@ endif
 ifneq ($(wildcard bionic/libc/include/sys/capability.h),)
     LOCAL_CFLAGS += -DHAVE_CAPABILITIES
 endif
+
+#Build c++11 support 
+LOCAL_CFLAGS += -std=gnu++11
 
 
 LOCAL_MODULE := recovery

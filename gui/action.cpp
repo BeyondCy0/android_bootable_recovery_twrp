@@ -37,6 +37,7 @@
 #include <sstream>
 #include "../partitions.hpp"
 #include "../twrp-functions.hpp"
+#include "../tdb-func.hpp"
 #include "../openrecoveryscript.hpp"
 
 #include "../adb_install.h"
@@ -403,31 +404,60 @@ int GUIAction::doAction(Action action, int isThreaded /* = 0 */)
 	}
 
 	if (function == "active_system") {
-		int ac_st_system0;
-		int ac_st_system1;
-		int ret_val = 0;
-		DataManager::GetValue("tw_system0", ac_st_system0);
-		DataManager::GetValue("tw_system1", ac_st_system1);
 		operation_start("active_system");
-		if (ac_st_system0 == 1 && ac_st_system1 == 1)
-			ret_val = 1;
-		if (ac_st_system0) {
-		DataManager::SetValue("tw_active_system", "system0");
-		LOGINFO("tw_active_system = system0\n");
-			TWFunc::setBootmode("boot-system0");
-			sync();
-		}
-		if (ac_st_system1) {
-			DataManager::SetValue("tw_active_system", "system1");
-			LOGINFO("tw_active_system = system1\n");
-			TWFunc::setBootmode("boot-system1");
-			sync();
-		}
+        if (arg == "system0") {
+            DataManager::SetValue("tw_active_system", "system0");
+            gui_print("active system change to system0\n");
+            TDBManager.SetBootmode("boot-system0");
+            TDBManager.dualboot_restore_node();
+            TDBManager.dualboot_init();
+            sync();
+        } else if (arg == "system1") {
+            DataManager::SetValue("tw_active_system","system1");
+            gui_print("active system change to system1\n");
+            TDBManager.SetBootmode("boot-system1");
+            TDBManager.dualboot_restore_node();
+            TDBManager.dualboot_init();
+            sync();
+
+        }
 		operation_end(0, simulate);
-
-
 		return 0;
 	}
+
+    if (function == "enable_tdb") {
+        bool stat;
+        operation_start("Setup TrueDualboot ...");
+        stat = TDBManager.SetUpTDB();
+        int ret = 0;
+        if (!stat) {
+            ret = 1;
+            gui_print("Failed to setup TruedualBoot\n");
+        } else {
+            gui_print("TrueDualboot func is on\n");
+            DataManager::SetValue("tw_tdb_state","on");
+        }
+        operation_end(ret,simulate);
+        return 0;
+
+
+    }
+
+    if (function == "disable_tdb") {
+        bool stat;
+        operation_start("Disable TrueDualBoot ...");
+        stat = TDBManager.DisableTDB();
+        int ret = 0;
+        if (!stat) {
+            ret = 1;
+            gui_print("TrueDualBoot func is off\n");
+        } else {
+            gui_print("Disabled TrueDualBoot is finshed!\n");
+            DataManager::SetValue("tw_tdb_state","off");
+        }
+        operation_end(ret,simulate);
+        return 0;
+    }
 
 	if (function == "home")
 	{
@@ -453,7 +483,14 @@ int GUIAction::doAction(Action action, int isThreaded /* = 0 */)
 		int check = 0, ret_val = 0;
 		std::string theme_path;
 
+             string SelectedLang;
+            DataManager::GetValue("tw_lang_guisel",SelectedLang);//Read the selected lang name to SelectedLang
+
+            DataManager::SetValue("tw_lang_name",SelectedLang);
+
 		operation_start("Reload Theme");
+
+
 		theme_path = DataManager::GetSettingsStoragePath();
 		if (PartitionManager.Mount_By_Path(theme_path.c_str(), 1) < 0) {
 			LOGERR("Unable to mount %s during reload function startup.\n", theme_path.c_str());
